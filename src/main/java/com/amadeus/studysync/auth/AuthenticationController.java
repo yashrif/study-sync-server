@@ -1,11 +1,10 @@
 package com.amadeus.studysync.auth;
 
-import com.amadeus.studysync.rest.AppErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -33,8 +32,8 @@ public class AuthenticationController {
 
     @PostMapping("/refresh")
     public void refreshToken(
-            HttpServletRequest request,
-            HttpServletResponse response
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response
     ) throws IOException {
         service.refreshToken(request, response);
     }

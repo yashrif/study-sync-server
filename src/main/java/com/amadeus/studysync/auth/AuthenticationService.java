@@ -1,6 +1,8 @@
 package com.amadeus.studysync.auth;
 
 import com.amadeus.studysync.config.JwtService;
+import com.amadeus.studysync.exception.AlreadyExistsException;
+import com.amadeus.studysync.exception.NotFoundException;
 import com.amadeus.studysync.token.Token;
 import com.amadeus.studysync.token.TokenRepository;
 import com.amadeus.studysync.token.TokenType;
@@ -37,9 +39,8 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole() == null ? Role.UNSET : request.getRole())
                 .build();
-        System.out.println(user);
         repository.findByEmail(user.getEmail()).ifPresent((args) -> {
-            throw new AuthenticationUserExistsException("User already exists with email - " + user.getEmail());
+            throw new AlreadyExistsException("User already exists with email - " + user.getEmail());
         });
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -54,7 +55,7 @@ public class AuthenticationService {
     //Authenticate User
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var user = repository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new AuthenticationUserNotFoundException("User not found with email - " + request.getEmail()));
+                .orElseThrow(() -> new NotFoundException("User not found with email - " + request.getEmail()));
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -111,7 +112,7 @@ public class AuthenticationService {
             throw new RuntimeException("Invalid refresh token!");
         }
         var user = this.repository.findByEmail(userEmail)
-                .orElseThrow(() -> new AuthenticationUserNotFoundException("User not found with email - " + userEmail));
+                .orElseThrow(() -> new NotFoundException("User not found with email - " + userEmail));
         if (jwtService.isTokenValid(refreshToken, user)) {
             var accessToken = jwtService.generateToken(user);
             revokeAllUserTokens(user);
