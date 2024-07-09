@@ -30,7 +30,7 @@ public class QNA {
     private String title;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<MCQ> mcqs;
+    private List<MCQ> mcq;
 
 
     @CreatedDate

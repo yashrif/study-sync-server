@@ -28,7 +28,7 @@ public class QNAService implements AppService<QNA, QNARequest, UUID> {
 
         return QNA.builder()
                 .title(request.getTitle())
-                .mcqs(request.getMcqs())
+                .mcq(request.getMcqs())
                 .build();
     }
 

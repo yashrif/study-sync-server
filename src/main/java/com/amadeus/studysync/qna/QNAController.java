@@ -44,7 +44,7 @@ public class QNAController {
 
         response.setId(QNA.getId());
         response.setTitle(QNA.getTitle());
-        response.setMcqs(QNA.getMcqs());
+        response.setMcq(QNA.getMcq());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
