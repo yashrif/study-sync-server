@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -21,7 +22,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Upload {
     @Id
-    private String id;
+    private UUID id;
 
     private String title;
     private String name;
@@ -45,9 +46,9 @@ public class Upload {
             nullable = false,
             updatable = false
     )
-    private Integer createdBy;
+    private UUID createdBy;
 
     @LastModifiedBy
     @Column(insertable = false)
-    private Integer lastModifiedBy;
+    private UUID lastModifiedBy;
 }

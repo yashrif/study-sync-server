@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public Upload findById(String theId) {
+    public Upload findById(UUID theId) {
         return repository.findById(theId).orElse(null);
     }
 
@@ -31,14 +32,13 @@ public class UploadServiceImpl implements UploadService {
                 .name(request.getName())
                 .type(request.getType())
                 .build();
-        repository.save(file);
 
-        return this.findById(request.getId());
+        return repository.save(file);
     }
 
 
     @Override
-    public void deleteById(String theId) {
+    public void deleteById(UUID theId) {
         repository.deleteById(theId);
     }
 

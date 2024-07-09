@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/uploads")
@@ -23,7 +24,7 @@ public class UploadController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Upload> findUploadById(@PathVariable String id) throws Exception {
+    public ResponseEntity<Upload> findUploadById(@PathVariable UUID id) throws Exception {
         Upload file = service.findById(id);
 
         if (file == null) {
