@@ -26,10 +26,10 @@ public class QNAService implements AppService<QNA, QNARequest, UUID> {
     @Override
     public QNA save(QNARequest request) {
 
-        return QNA.builder()
+        return repository.save(QNA.builder()
                 .title(request.getTitle())
                 .mcq(request.getMcqs())
-                .build();
+                .build());
     }
 
 

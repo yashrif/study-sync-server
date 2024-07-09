@@ -26,11 +26,11 @@ public class MCQService implements AppService<MCQ, MCQRequest, UUID> {
     @Override
     public MCQ save(MCQRequest request) {
 
-        return MCQ.builder()
+        return repository.save(MCQ.builder()
                 .question(request.getQuestion())
                 .choice(request.getChoice())
                 .answer(request.getAnswer())
-                .build();
+                .build());
     }
 
 
