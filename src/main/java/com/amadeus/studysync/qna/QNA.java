@@ -32,15 +32,15 @@ public class QNA {
 
     @JsonIgnore
     @OneToMany(mappedBy = "qna", cascade = CascadeType.ALL)
-    private List<MCQ> mcq;
+    private List<MCQ> mcqs;
 
 
     public void addMCQ(MCQ theMCQ) {
-        if (mcq == null) {
-            mcq = new ArrayList<>();
+        if (mcqs == null) {
+            mcqs = new ArrayList<>();
         }
 
-        mcq.add(theMCQ);
+        mcqs.add(theMCQ);
         theMCQ.setQna(this);
     }
 

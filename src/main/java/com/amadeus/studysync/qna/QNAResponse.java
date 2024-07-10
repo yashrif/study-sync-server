@@ -23,19 +23,19 @@ public class QNAResponse {
     @JsonProperty("title")
     private String title;
 
-    @JsonProperty("mcq")
-    private List<MCQ> mcq;
+    @JsonProperty("mcqs")
+    private List<MCQ> mcqs;
 
     @JsonProperty("createDate")
     private LocalDateTime createDate;
 
-    public static List<QNAResponse> from(List<QNA> QNAs) {
-        return QNAs.stream()
-                .map(QNA -> QNAResponse.builder()
-                        .id(QNA.getId())
-                        .title(QNA.getTitle())
-                        .mcq(QNA.getMcq())
-                        .createDate(QNA.getCreateDate())
+    public static List<QNAResponse> from(List<QNA> qnas) {
+        return qnas.stream()
+                .map(qna -> QNAResponse.builder()
+                        .id(qna.getId())
+                        .title(qna.getTitle())
+                        .mcqs(qna.getMcqs())
+                        .createDate(qna.getCreateDate())
                         .build())
                 .collect(Collectors.toList());
     }

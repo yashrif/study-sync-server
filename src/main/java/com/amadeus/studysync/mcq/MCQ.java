@@ -30,10 +30,10 @@ public class MCQ {
     private String question;
 
     @ElementCollection
-    private List<String> choice;
+    private List<String> choices;
 
     @ElementCollection
-    private List<Boolean> answer;
+    private List<Boolean> answers;
 
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})

@@ -18,20 +18,20 @@ public class MCQController {
 
     @GetMapping
     public ResponseEntity<List<MCQResponse>> findAllMCQs() {
-        List<MCQ> MCQS = (service.findAll());
+        List<MCQ> mcqs = (service.findAll());
 
-        return ResponseEntity.ok(MCQResponse.from(MCQS));
+        return ResponseEntity.ok(MCQResponse.from(mcqs));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MCQ> findMCQById(@PathVariable UUID id) throws Exception {
-        MCQ file = service.findById(id);
+        MCQ mcq = service.findById(id);
 
-        if (file == null) {
+        if (mcq == null) {
             throw new NotFoundException("MCQ not found - " + id);
         }
 
-        return ResponseEntity.ok(file);
+        return ResponseEntity.ok(mcq);
     }
 
     @PostMapping
@@ -44,8 +44,8 @@ public class MCQController {
 
         response.setId(mcq.getId());
         response.setQuestion(mcq.getQuestion());
-        response.setChoice(mcq.getChoice());
-        response.setAnswer(mcq.getAnswer());
+        response.setChoices(mcq.getChoices());
+        response.setAnswers(mcq.getAnswers());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

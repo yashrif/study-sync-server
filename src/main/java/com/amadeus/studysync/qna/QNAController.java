@@ -18,9 +18,9 @@ public class QNAController {
 
     @GetMapping
     public ResponseEntity<List<QNAResponse>> findAllQNAs() {
-        List<QNA> QNAS = (service.findAll());
+        List<QNA> qnas = (service.findAll());
 
-        return ResponseEntity.ok(QNAResponse.from(QNAS));
+        return ResponseEntity.ok(QNAResponse.from(qnas));
     }
 
     @GetMapping("/{id}")
@@ -44,7 +44,7 @@ public class QNAController {
 
         response.setId(qna.getId());
         response.setTitle(qna.getTitle());
-        response.setMcq(qna.getMcq());
+        response.setMcqs(qna.getMcqs());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

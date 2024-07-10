@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 public class MCQRequest {
     private String question;
-    private List<String> choice;
-    private List<Boolean> answer;
+    private List<String> choices;
+    private List<Boolean> answers;
 }

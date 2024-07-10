@@ -28,8 +28,8 @@ public class MCQService implements AppService<MCQ, MCQRequest, UUID> {
 
         return repository.save(MCQ.builder()
                 .question(request.getQuestion())
-                .choice(request.getChoice())
-                .answer(request.getAnswer())
+                .choices(request.getChoices())
+                .answers(request.getAnswers())
                 .build());
     }
 

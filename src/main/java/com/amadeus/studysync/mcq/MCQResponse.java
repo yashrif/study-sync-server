@@ -22,11 +22,11 @@ public class MCQResponse {
     @JsonProperty("question")
     private String question;
 
-    @JsonProperty("choice")
-    private List<String> choice;
+    @JsonProperty("choices")
+    private List<String> choices;
 
-    @JsonProperty("answer")
-    private List<Boolean> answer;
+    @JsonProperty("answers")
+    private List<Boolean> answers;
 
     @JsonProperty("createDate")
     private LocalDateTime createDate;
@@ -36,8 +36,8 @@ public class MCQResponse {
                 .map(mcq -> MCQResponse.builder()
                         .id(mcq.getId())
                         .question(mcq.getQuestion())
-                        .choice(mcq.getChoice())
-                        .answer(mcq.getAnswer())
+                        .choices(mcq.getChoices())
+                        .answers(mcq.getAnswers())
                         .createDate(mcq.getCreateDate())
                         .build())
                 .collect(Collectors.toList());

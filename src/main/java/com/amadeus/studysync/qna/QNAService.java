@@ -31,14 +31,15 @@ public class QNAService implements AppService<QNA, QNARequest, UUID> {
         QNA qna = new QNA();
         qna.setTitle(request.getTitle());
 
-        List<MCQ> mcqs = new ArrayList<>();
+        if (request.getMcqs() != null) {
+            List<MCQ> mcqs = new ArrayList<>();
 
-        for (MCQ mcq : request.getMcq()) {
-            mcq.setQna(qna);
-            mcqs.add(mcq);
+            for (MCQ mcq : request.getMcqs()) {
+                mcq.setQna(qna);
+                mcqs.add(mcq);
+            }
+            qna.setMcqs(mcqs);
         }
-
-        qna.setMcq(mcqs);
 
         return repository.save(qna);
     }

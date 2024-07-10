@@ -12,5 +12,5 @@ import java.util.List;
 @Builder
 public class QNARequest {
     private String title;
-    private List<MCQ> mcq;
+    private List<MCQ> mcqs;
 }
