@@ -1,11 +1,10 @@
-package com.amadeus.studysync.mcq;
+package com.amadeus.studysync.qna;
 
-import com.amadeus.studysync.qna.QNA;
+import com.amadeus.studysync.mcq.Mcq;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -13,32 +12,38 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class MCQ {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Qna {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String question;
+    @NonNull
+    private String title;
 
-    @ElementCollection
-    private List<String> choices;
-
-    @ElementCollection
-    private List<Boolean> answers;
+    @OneToMany(mappedBy = "qna", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Mcq> mcqs;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "qna_id", referencedColumnName = "id")
-    private QNA qna;
+    public void addMCQ(Mcq theMcq) {
+        if (mcqs == null) {
+            mcqs = new ArrayList<>();
+        }
+
+        mcqs.add(theMcq);
+        theMcq.setQna(this);
+    }
 
     @CreatedDate
     @Column(

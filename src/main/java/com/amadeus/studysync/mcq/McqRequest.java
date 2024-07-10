@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class MCQRequest {
+public class McqRequest {
     private String question;
     private List<String> choices;
     private List<Boolean> answers;

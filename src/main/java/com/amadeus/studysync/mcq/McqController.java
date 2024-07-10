@@ -12,20 +12,20 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/mcqs")
 @RequiredArgsConstructor
-public class MCQController {
+public class McqController {
 
-    private final MCQService service;
+    private final McqServiceImpl service;
 
     @GetMapping
-    public ResponseEntity<List<MCQResponse>> findAllMCQs() {
-        List<MCQ> mcqs = (service.findAll());
+    public ResponseEntity<List<McqResponse>> findAllMCQs() {
+        List<Mcq> mcqs = (service.findAll());
 
-        return ResponseEntity.ok(MCQResponse.from(mcqs));
+        return ResponseEntity.ok(McqResponse.from(mcqs));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MCQ> findMCQById(@PathVariable UUID id) throws Exception {
-        MCQ mcq = service.findById(id);
+    public ResponseEntity<Mcq> findMCQById(@PathVariable UUID id) throws Exception {
+        Mcq mcq = service.findMcqByIdJoinFetch(id);
 
         if (mcq == null) {
             throw new NotFoundException("MCQ not found - " + id);
@@ -35,12 +35,12 @@ public class MCQController {
     }
 
     @PostMapping
-    public ResponseEntity<MCQResponse> save(
-            @RequestBody MCQRequest request
+    public ResponseEntity<McqResponse> save(
+            @RequestBody McqRequest request
     ) {
-        MCQ mcq = service.save(request);
+        Mcq mcq = service.save(request);
 
-        MCQResponse response = new MCQResponse();
+        McqResponse response = new McqResponse();
 
         response.setId(mcq.getId());
         response.setQuestion(mcq.getQuestion());

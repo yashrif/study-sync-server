@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MCQResponse {
+public class McqResponse {
     @JsonProperty("id")
     private UUID id;
 
@@ -31,9 +31,9 @@ public class MCQResponse {
     @JsonProperty("createDate")
     private LocalDateTime createDate;
 
-    public static List<MCQResponse> from(List<MCQ> MCQS) {
-        return MCQS.stream()
-                .map(mcq -> MCQResponse.builder()
+    public static List<McqResponse> from(List<Mcq> Mcqs) {
+        return Mcqs.stream()
+                .map(mcq -> McqResponse.builder()
                         .id(mcq.getId())
                         .question(mcq.getQuestion())
                         .choices(mcq.getChoices())
