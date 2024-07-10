@@ -1,9 +1,11 @@
 package com.amadeus.studysync.qna;
 
+import com.amadeus.studysync.mcq.MCQ;
 import com.amadeus.studysync.service.AppService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,12 +28,20 @@ public class QNAService implements AppService<QNA, QNARequest, UUID> {
     @Override
     public QNA save(QNARequest request) {
 
-        return repository.save(QNA.builder()
-                .title(request.getTitle())
-                .mcq(request.getMcqs())
-                .build());
-    }
+        QNA qna = new QNA();
+        qna.setTitle(request.getTitle());
 
+        List<MCQ> mcqs = new ArrayList<>();
+
+        for (MCQ mcq : request.getMcq()) {
+            mcq.setQna(qna);
+            mcqs.add(mcq);
+        }
+
+        qna.setMcq(mcqs);
+
+        return repository.save(qna);
+    }
 
     @Override
     public void deleteById(UUID theId) {

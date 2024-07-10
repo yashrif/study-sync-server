@@ -38,13 +38,13 @@ public class QNAController {
     public ResponseEntity<QNAResponse> save(
             @RequestBody QNARequest request
     ) {
-        QNA QNA = service.save(request);
+        QNA qna = service.save(request);
 
         QNAResponse response = new QNAResponse();
 
-        response.setId(QNA.getId());
-        response.setTitle(QNA.getTitle());
-        response.setMcq(QNA.getMcq());
+        response.setId(qna.getId());
+        response.setTitle(qna.getTitle());
+        response.setMcq(qna.getMcq());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

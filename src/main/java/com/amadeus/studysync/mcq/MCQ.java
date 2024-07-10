@@ -1,5 +1,6 @@
 package com.amadeus.studysync.mcq;
 
+import com.amadeus.studysync.qna.QNA;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,10 @@ public class MCQ {
     @ElementCollection
     private List<Boolean> answer;
 
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "qna_id", referencedColumnName = "id")
+    private QNA qna;
 
     @CreatedDate
     @Column(
