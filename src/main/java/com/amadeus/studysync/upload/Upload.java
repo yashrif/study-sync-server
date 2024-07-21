@@ -27,6 +27,7 @@ public class Upload {
     private String title;
     private String name;
     private String type;
+    private Boolean isIndexed;
 
 
     @CreatedDate

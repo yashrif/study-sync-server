@@ -1,10 +1,14 @@
-package com.amadeus.studysync.mcq;
+package com.amadeus.studysync.quiz;
 
-import com.amadeus.studysync.quiz.Quiz;
+import com.amadeus.studysync.cq.Cq;
+import com.amadeus.studysync.mcq.Mcq;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -12,6 +16,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,29 +24,21 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Mcq {
+public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NonNull
-    private String question;
+    private String title;
 
-    @NonNull
-    @ElementCollection
-    private List<String> choices;
+    @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Mcq> mcqs;
 
-    @NonNull
-    @ElementCollection
-    private List<Boolean> answers;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "quiz_id", referencedColumnName = "id")
-    private Quiz quiz;
+    @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Cq> cqs;
 
     @CreatedDate
     @Column(
@@ -54,7 +51,6 @@ public class Mcq {
     @Column(insertable = false)
     private LocalDateTime lastModified;
 
-
     @CreatedBy
     @Column(
             nullable = false,
@@ -65,4 +61,13 @@ public class Mcq {
     @LastModifiedBy
     @Column(insertable = false)
     private UUID lastModifiedBy;
+
+    public void addMCQ(Mcq theCqs) {
+        if (mcqs == null) {
+            mcqs = new ArrayList<>();
+        }
+
+        mcqs.add(theCqs);
+        theCqs.setQuiz(this);
+    }
 }

@@ -18,34 +18,34 @@ public class McqController {
 
     @GetMapping
     public ResponseEntity<List<McqResponse>> findAllMCQs() {
-        List<Mcq> mcqs = (service.findAll());
+        List<Mcq> cqs = (service.findAll());
 
-        return ResponseEntity.ok(McqResponse.from(mcqs));
+        return ResponseEntity.ok(McqResponse.from(cqs));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Mcq> findMCQById(@PathVariable UUID id) throws Exception {
-        Mcq mcq = service.findMcqByIdJoinFetch(id);
+        Mcq cqs = service.findMcqByIdJoinFetch(id);
 
-        if (mcq == null) {
+        if (cqs == null) {
             throw new NotFoundException("MCQ not found - " + id);
         }
 
-        return ResponseEntity.ok(mcq);
+        return ResponseEntity.ok(cqs);
     }
 
     @PostMapping
     public ResponseEntity<McqResponse> save(
             @RequestBody McqRequest request
     ) {
-        Mcq mcq = service.save(request);
+        Mcq cqs = service.save(request);
 
         McqResponse response = new McqResponse();
 
-        response.setId(mcq.getId());
-        response.setQuestion(mcq.getQuestion());
-        response.setChoices(mcq.getChoices());
-        response.setAnswers(mcq.getAnswers());
+        response.setId(cqs.getId());
+        response.setQuestion(cqs.getQuestion());
+        response.setChoices(cqs.getChoices());
+        response.setAnswers(cqs.getAnswers());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
 public class McqRequest {
+    private UUID id;
     private String question;
     private List<String> choices;
     private List<Boolean> answers;

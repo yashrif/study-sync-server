@@ -1,4 +1,4 @@
-package com.amadeus.studysync.mcq;
+package com.amadeus.studysync.cq;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -15,30 +15,30 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class McqResponse {
+public class CqResponse {
     @JsonProperty("id")
     private UUID id;
 
     @JsonProperty("question")
     private String question;
 
-    @JsonProperty("choices")
-    private List<String> choices;
+    @JsonProperty("answer")
+    private String answer;
 
-    @JsonProperty("answers")
-    private List<Boolean> answers;
+    @JsonProperty("isFlashcard")
+    private Boolean isFlashcard;
 
     @JsonProperty("createDate")
     private LocalDateTime createDate;
 
-    public static List<McqResponse> from(List<Mcq> cqs) {
+    public static List<CqResponse> from(List<Cq> cqs) {
         return cqs.stream()
-                .map(mcq -> McqResponse.builder()
-                        .id(mcq.getId())
-                        .question(mcq.getQuestion())
-                        .choices(mcq.getChoices())
-                        .answers(mcq.getAnswers())
-                        .createDate(mcq.getCreateDate())
+                .map(cq -> CqResponse.builder()
+                        .id(cq.getId())
+                        .question(cq.getQuestion())
+                        .answer(cq.getAnswer())
+                        .isFlashcard(cq.getIsFlashcard())
+                        .createDate(cq.getCreateDate())
                         .build())
                 .collect(Collectors.toList());
     }

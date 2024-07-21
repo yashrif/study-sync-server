@@ -28,8 +28,22 @@ public class UploadResponse {
     @JsonProperty("type")
     private String type;
 
+    @JsonProperty("isIndexed")
+    private Boolean isIndexed;
+
     @JsonProperty("createDate")
     private LocalDateTime createDate;
+
+    public static UploadResponse from(Upload upload) {
+        return UploadResponse.builder()
+                .id(upload.getId())
+                .title(upload.getTitle())
+                .name(upload.getName())
+                .type(upload.getType())
+                .isIndexed(upload.getIsIndexed())
+                .createDate(upload.getCreateDate())
+                .build();
+    }
 
     public static List<UploadResponse> from(List<Upload> uploads) {
         return uploads.stream()
@@ -38,6 +52,7 @@ public class UploadResponse {
                         .title(upload.getTitle())
                         .name(upload.getName())
                         .type(upload.getType())
+                        .isIndexed(upload.getIsIndexed())
                         .createDate(upload.getCreateDate())
                         .build())
                 .collect(Collectors.toList());

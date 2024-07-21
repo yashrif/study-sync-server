@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -49,15 +50,21 @@ public class UploadController {
     public ResponseEntity<UploadResponse> save(
             @RequestBody UploadRequest request
     ) {
-        service.save(request);
+        Upload response = service.save(request);
 
-        UploadResponse response = new UploadResponse();
-
-        response.setId(request.getId());
-        response.setName(request.getName());
-        response.setType(request.getType());
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(UploadResponse.from(response), HttpStatus.CREATED);
     }
 
+    @PutMapping
+    public ResponseEntity<Upload> update(
+            @RequestBody Upload request
+    ) {
+        return ResponseEntity.ok((service.update(request)));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Upload> partiallyUpdate(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
+        Upload updatedUpload = service.partialUpdate(id, updates);
+        return ResponseEntity.ok(updatedUpload);
+    }
 }

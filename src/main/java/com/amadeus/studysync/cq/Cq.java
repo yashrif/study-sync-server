@@ -1,8 +1,9 @@
-package com.amadeus.studysync.qna;
+package com.amadeus.studysync.cq;
 
-import com.amadeus.studysync.mcq.Mcq;
+import com.amadeus.studysync.quiz.Quiz;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -12,38 +13,36 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Qna {
+public class Cq {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NonNull
-    private String title;
+    private String question;
 
-    @OneToMany(mappedBy = "qna", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Mcq> mcqs;
+    @NonNull
+    private String answer;
 
+    @NonNull
+    private Boolean isFlashcard;
 
-    public void addMCQ(Mcq theMcq) {
-        if (mcqs == null) {
-            mcqs = new ArrayList<>();
-        }
+    @Nullable
+    private Status status;
 
-        mcqs.add(theMcq);
-        theMcq.setQna(this);
-    }
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "quiz_id", referencedColumnName = "id")
+    private Quiz quiz;
 
     @CreatedDate
     @Column(

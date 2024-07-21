@@ -1,5 +1,6 @@
-package com.amadeus.studysync.qna;
+package com.amadeus.studysync.quiz;
 
+import com.amadeus.studysync.cq.Cq;
 import com.amadeus.studysync.mcq.Mcq;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QnaResponse {
+public class QuizResponse {
     @JsonProperty("id")
     private UUID id;
 
@@ -26,15 +27,18 @@ public class QnaResponse {
     @JsonProperty("mcqs")
     private List<Mcq> mcqs;
 
+    @JsonProperty("cqs")
+    private List<Cq> cqs;
+
     @JsonProperty("createDate")
     private LocalDateTime createDate;
 
-    public static List<QnaResponse> from(List<Qna> qnas) {
-        return qnas.stream()
-                .map(qna -> QnaResponse.builder()
-                        .id(qna.getId())
-                        .title(qna.getTitle())
-                        .createDate(qna.getCreateDate())
+    public static List<QuizResponse> from(List<Quiz> quizzes) {
+        return quizzes.stream()
+                .map(quiz -> QuizResponse.builder()
+                        .id(quiz.getId())
+                        .title(quiz.getTitle())
+                        .createDate(quiz.getCreateDate())
                         .build())
                 .collect(Collectors.toList());
     }
