@@ -36,7 +36,6 @@ public class CqServiceImpl implements CqService {
                 .question(request.getQuestion())
                 .answer(request.getAnswer())
                 .isFlashcard(request.getIsFlashcard() != null ? request.getIsFlashcard() : false)
-                .status(null)
                 .build());
     }
 

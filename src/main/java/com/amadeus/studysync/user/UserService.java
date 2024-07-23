@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
 
@@ -13,16 +14,17 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
+
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
 
-        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
         // check if the current password is correct
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalStateException("Wrong password");
         }
         // check if the two new passwords are the same
-        if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new IllegalStateException("Password are not the same");
         }
 
@@ -31,5 +33,19 @@ public class UserService {
 
         // save the new password
         repository.save(user);
+    }
+
+    public User getUser(Principal connectedUser) {
+
+        return (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+    }
+
+    public User partialUpdate(@RequestBody PatchUserRequest updates, Principal connectedUser) {
+        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        user.setFirstName(updates.getFirstName() != null ? updates.getFirstName() : user.getFirstName());
+        user.setLastName(updates.getLastName() != null ? updates.getLastName() : user.getLastName());
+
+        return repository.save(user);
     }
 }

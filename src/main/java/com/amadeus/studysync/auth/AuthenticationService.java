@@ -37,7 +37,7 @@ public class AuthenticationService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole() == null ? Role.UNSET : request.getRole())
+                .role(request.getRole() == null ? Role.USER : request.getRole())
                 .build();
         repository.findByEmail(user.getEmail()).ifPresent((args) -> {
             throw new AlreadyExistsException("User already exists with email - " + user.getEmail());
