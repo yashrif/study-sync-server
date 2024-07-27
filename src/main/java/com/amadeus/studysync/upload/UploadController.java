@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -48,7 +47,7 @@ public class UploadController {
 
     @PostMapping
     public ResponseEntity<UploadResponse> save(
-            @RequestBody UploadRequest request
+            @RequestBody PostUploadRequest request
     ) {
         Upload response = service.save(request);
 
@@ -63,8 +62,13 @@ public class UploadController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Upload> partiallyUpdate(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<Upload> partiallyUpdate(@PathVariable UUID id, @RequestBody PatchUploadRequest updates) {
         Upload updatedUpload = service.partialUpdate(id, updates);
         return ResponseEntity.ok(updatedUpload);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable UUID id) {
+        service.deleteById(id);
     }
 }

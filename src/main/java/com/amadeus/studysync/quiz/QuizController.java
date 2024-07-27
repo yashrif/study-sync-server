@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -37,7 +36,7 @@ public class QuizController {
 
     @PostMapping
     public ResponseEntity<QuizResponse> save(
-            @RequestBody QuizRequest request
+            @RequestBody PostQuizRequest request
     ) {
         Quiz quiz = service.save(request);
 
@@ -59,7 +58,7 @@ public class QuizController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Quiz> partiallyUpdate(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<Quiz> partiallyUpdate(@PathVariable UUID id, @RequestBody PatchQuizRequest updates) {
         Quiz updatedQuiz = service.partialUpdate(id, updates);
         return ResponseEntity.ok(updatedQuiz);
     }

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class QuizRequest {
+public class PostQuizRequest {
     private UUID id;
     private String title;
     private List<Mcq> mcqs;

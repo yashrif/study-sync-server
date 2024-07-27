@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class CqRequest {
+public class PostCqRequest {
     @Nullable
     private UUID id;
 

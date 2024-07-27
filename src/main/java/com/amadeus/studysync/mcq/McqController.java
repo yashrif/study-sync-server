@@ -36,7 +36,7 @@ public class McqController {
 
     @PostMapping
     public ResponseEntity<McqResponse> save(
-            @RequestBody McqRequest request
+            @RequestBody PostMcqRequest request
     ) {
         Mcq cqs = service.save(request);
 

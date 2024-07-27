@@ -65,4 +65,12 @@ public class Mcq {
     @LastModifiedBy
     @Column(insertable = false)
     private UUID lastModifiedBy;
+
+    public void addChoice(String choice) {
+        choices.add(choice);
+    }
+
+    public void addAnswer(Boolean answer) {
+        answers.add(answer);
+    }
 }

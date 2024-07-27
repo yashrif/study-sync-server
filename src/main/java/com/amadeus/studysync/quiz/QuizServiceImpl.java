@@ -5,9 +5,7 @@ import com.amadeus.studysync.exception.NotFoundException;
 import com.amadeus.studysync.mcq.Mcq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 @Service
@@ -27,7 +25,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz save(QuizRequest request) {
+    public Quiz save(PostQuizRequest request) {
 
         Quiz quiz = Quiz.builder()
                 .id(request.getId())
@@ -70,19 +68,19 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz partialUpdate(UUID theId, Map<String, Object> updates) {
-        Quiz upload = repository.findById(theId)
+    public Quiz partialUpdate(UUID theId, PatchQuizRequest updates) {
+        Quiz quiz = repository.findById(theId)
                 .orElseThrow(() -> new NotFoundException("Quiz not found with email - " + theId));
 
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Quiz.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, upload, value);
-            }
-        });
+        quiz.setTitle(updates.getTitle() != null ? updates.getTitle() : quiz.getTitle());
 
-        return repository.save(upload);
+        if (updates.getCqs() != null)
+            updates.getCqs().forEach(quiz::addCq);
+
+        if (updates.getMcqs() != null)
+            updates.getMcqs().forEach(quiz::addMcq);
+
+        return repository.save(quiz);
     }
 
     @Override

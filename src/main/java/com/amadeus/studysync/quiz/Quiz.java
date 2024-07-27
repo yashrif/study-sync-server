@@ -62,12 +62,21 @@ public class Quiz {
     @Column(insertable = false)
     private UUID lastModifiedBy;
 
-    public void addMCQ(Mcq theCqs) {
+    public void addMcq(Mcq theMcq) {
         if (mcqs == null) {
             mcqs = new ArrayList<>();
         }
 
-        mcqs.add(theCqs);
-        theCqs.setQuiz(this);
+        mcqs.add(theMcq);
+        theMcq.setQuiz(this);
+    }
+
+    public void addCq(Cq theCq) {
+        if (cqs == null) {
+            cqs = new ArrayList<>();
+        }
+
+        cqs.add(theCq);
+        theCq.setQuiz(this);
     }
 }

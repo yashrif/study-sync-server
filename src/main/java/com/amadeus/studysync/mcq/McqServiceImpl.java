@@ -4,11 +4,8 @@ import com.amadeus.studysync.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,7 +27,7 @@ public class McqServiceImpl implements McqService {
     }
 
     @Override
-    public Mcq save(McqRequest request) {
+    public Mcq save(PostMcqRequest request) {
 
         return repository.save(Mcq.builder()
                 .question(request.getQuestion())
@@ -53,19 +50,20 @@ public class McqServiceImpl implements McqService {
     }
 
     @Override
-    public Mcq partialUpdate(UUID theId, Map<String, Object> updates) {
-        Mcq upload = repository.findById(theId)
+    public Mcq partialUpdate(UUID theId, PatchMcqRequest updates) throws Exception {
+        Mcq mcq = repository.findById(theId)
                 .orElseThrow(() -> new NotFoundException("Mcq not found with email - " + theId));
 
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Mcq.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, upload, value);
-            }
-        });
+        if (updates.getAnswers() != null && updates.getChoices() != null && updates.getAnswers().size() == updates.getChoices().size()) {
+            mcq.setQuestion(updates.getQuestion() != null ? updates.getQuestion() : mcq.getQuestion());
 
-        return repository.save(upload);
+            updates.getAnswers().forEach(mcq::addAnswer);
+            updates.getChoices().forEach(mcq::addChoice);
+        } else {
+            throw new Exception("Size of choices and answers are different!");
+        }
+
+        return repository.save(mcq);
     }
 
     @Override

@@ -4,6 +4,6 @@ import com.amadeus.studysync.service.AppService;
 
 import java.util.UUID;
 
-public interface UploadService extends AppService<Upload, UploadRequest, UUID> {
+public interface UploadService extends AppService<Upload, PostUploadRequest, PatchUploadRequest, UUID> {
     Upload findByName(String name);
 }

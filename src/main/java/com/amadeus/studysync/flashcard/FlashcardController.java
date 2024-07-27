@@ -1,5 +1,8 @@
-package com.amadeus.studysync.cq;
+package com.amadeus.studysync.flashcard;
 
+import com.amadeus.studysync.cq.Cq;
+import com.amadeus.studysync.cq.CqResponse;
+import com.amadeus.studysync.cq.CqServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

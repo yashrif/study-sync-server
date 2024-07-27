@@ -2,12 +2,9 @@ package com.amadeus.studysync.upload;
 
 import com.amadeus.studysync.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -27,7 +24,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public Upload save(UploadRequest theUpload) {
+    public Upload save(PostUploadRequest theUpload) {
         var file = Upload.builder()
                 .id(theUpload.getId())
                 .title(theUpload.getTitle() != null
@@ -55,17 +52,14 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public Upload partialUpdate(UUID theId, Map<String, Object> updates) {
+    public Upload partialUpdate(UUID theId, PatchUploadRequest updates) {
         Upload upload = repository.findById(theId)
                 .orElseThrow(() -> new NotFoundException("Upload not found with email - " + theId));
 
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Upload.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, upload, value);
-            }
-        });
+        upload.setTitle(updates.getTitle() != null ? updates.getTitle() : upload.getTitle());
+        upload.setName(updates.getName() != null ? updates.getName() : upload.getName());
+        upload.setType(updates.getType() != null ? updates.getType() : upload.getType());
+        upload.setIsIndexed(updates.getIsIndexed() != null ? updates.getIsIndexed() : upload.getIsIndexed());
 
         return repository.save(upload);
     }

@@ -28,6 +28,9 @@ public class CqResponse {
     @JsonProperty("isFlashcard")
     private Boolean isFlashcard;
 
+    @JsonProperty("status")
+    private Status status;
+
     @JsonProperty("createDate")
     private LocalDateTime createDate;
 
@@ -38,6 +41,7 @@ public class CqResponse {
                         .question(cq.getQuestion())
                         .answer(cq.getAnswer())
                         .isFlashcard(cq.getIsFlashcard())
+                        .status(cq.getStatus())
                         .createDate(cq.getCreateDate())
                         .build())
                 .collect(Collectors.toList());

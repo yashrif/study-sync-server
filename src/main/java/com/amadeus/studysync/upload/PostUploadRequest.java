@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class UploadRequest {
+public class PostUploadRequest {
     private UUID id;
     private String title;
     private String name;

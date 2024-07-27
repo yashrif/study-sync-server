@@ -1,9 +1,8 @@
 package com.amadeus.studysync.service;
 
 import java.util.List;
-import java.util.Map;
 
-public interface AppService<T, K, ID> {
+public interface AppService<T, K, P, ID> {
 
     List<T> findAll();
 
@@ -15,5 +14,5 @@ public interface AppService<T, K, ID> {
 
     T update(T theEntity);
 
-    T partialUpdate(ID theId, Map<String, Object> updates);
+    T partialUpdate(ID theId, P updates) throws Exception;
 }

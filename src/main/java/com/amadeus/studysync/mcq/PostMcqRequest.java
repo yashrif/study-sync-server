@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class McqRequest {
+public class PostMcqRequest {
     private UUID id;
     private String question;
     private List<String> choices;

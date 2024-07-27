@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -37,7 +36,7 @@ public class CqController {
 
     @PostMapping
     public ResponseEntity<CqResponse> save(
-            @RequestBody CqRequest request
+            @RequestBody PostCqRequest request
     ) {
         Cq cq = service.save(request);
 
@@ -51,7 +50,7 @@ public class CqController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Cq> partiallyUpdate(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<Cq> partiallyUpdate(@PathVariable UUID id, @RequestBody PatchCqRequest updates) {
         Cq updatedCq = service.partialUpdate(id, updates);
         return ResponseEntity.ok(updatedCq);
     }

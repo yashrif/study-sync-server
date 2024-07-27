@@ -4,11 +4,8 @@ import com.amadeus.studysync.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,7 +27,7 @@ public class CqServiceImpl implements CqService {
     }
 
     @Override
-    public Cq save(CqRequest request) {
+    public Cq save(PostCqRequest request) {
 
         return repository.save(Cq.builder()
                 .question(request.getQuestion())
@@ -52,18 +49,16 @@ public class CqServiceImpl implements CqService {
         return repository.save(theCqs);
     }
 
+
     @Override
-    public Cq partialUpdate(UUID theId, Map<String, Object> updates) {
+    public Cq partialUpdate(UUID theId, PatchCqRequest updates) {
         Cq cq = repository.findById(theId)
                 .orElseThrow(() -> new NotFoundException("Cq not found with email - " + theId));
 
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Cq.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, cq, value);
-            }
-        });
+        cq.setQuestion(updates.getQuestion() != null ? updates.getQuestion() : cq.getQuestion());
+        cq.setAnswer(updates.getAnswer() != null ? updates.getAnswer() : cq.getAnswer());
+        cq.setIsFlashcard(updates.getIsFlashcard() != null ? updates.getIsFlashcard() : cq.getIsFlashcard());
+        cq.setStatus(updates.getStatus() != null ? updates.getStatus() : cq.getStatus());
 
         return repository.save(cq);
     }
