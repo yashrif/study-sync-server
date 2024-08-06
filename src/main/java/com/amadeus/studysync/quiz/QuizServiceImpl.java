@@ -3,6 +3,8 @@ package com.amadeus.studysync.quiz;
 import com.amadeus.studysync.cq.Cq;
 import com.amadeus.studysync.exception.NotFoundException;
 import com.amadeus.studysync.mcq.Mcq;
+import com.amadeus.studysync.upload.Upload;
+import com.amadeus.studysync.upload.UploadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.*;
 public class QuizServiceImpl implements QuizService {
 
     private final QuizRepository repository;
+    private final UploadRepository uploadRepository;
 
     @Override
     public List<Quiz> findAll() {
@@ -51,6 +54,12 @@ public class QuizServiceImpl implements QuizService {
             }
             quiz.setCqs(cqs);
         }
+
+        request.getUploads().forEach(upload -> {
+            Upload theUpload = uploadRepository.findById(upload.getId())
+                    .orElseThrow(() -> new NotFoundException("Quiz not found with id - " + upload.getId()));
+            quiz.addUpload(theUpload);
+        });
 
         return repository.save(quiz);
     }

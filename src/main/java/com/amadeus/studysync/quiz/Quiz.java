@@ -2,6 +2,7 @@ package com.amadeus.studysync.quiz;
 
 import com.amadeus.studysync.cq.Cq;
 import com.amadeus.studysync.mcq.Mcq;
+import com.amadeus.studysync.upload.Upload;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -39,6 +40,12 @@ public class Quiz {
 
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<Cq> cqs;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "quiz_upload",
+            joinColumns = @JoinColumn(name = "quiz_id"),
+            inverseJoinColumns = @JoinColumn(name = "upload_id"))
+    private List<Upload> uploads;
 
     @CreatedDate
     @Column(
@@ -78,5 +85,12 @@ public class Quiz {
 
         cqs.add(theCq);
         theCq.setQuiz(this);
+    }
+
+    public void addUpload(Upload theUpload) {
+        if (uploads == null) {
+            uploads = new ArrayList<>();
+        }
+        uploads.add(theUpload);
     }
 }

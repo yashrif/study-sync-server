@@ -1,10 +1,10 @@
 package com.amadeus.studysync.upload;
 
+import com.amadeus.studysync.quiz.Quiz;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -20,14 +21,26 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Upload {
     @Id
     private UUID id;
 
+    @NonNull
     private String title;
+
+    @NonNull
     private String name;
+
+    @NonNull
     private String type;
     private Boolean isIndexed;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "quiz_upload",
+            joinColumns = @JoinColumn(name = "upload_id"),
+            inverseJoinColumns = @JoinColumn(name = "quiz_id"))
+    private List<Quiz> quizzes;
 
 
     @CreatedDate
