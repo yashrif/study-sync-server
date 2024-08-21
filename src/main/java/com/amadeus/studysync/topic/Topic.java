@@ -14,8 +14,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 @Data
@@ -45,7 +45,8 @@ public class Topic {
 
     @Nullable
     @ElementCollection
-    private List<LocalDateTime> dates;
+    @CollectionTable(name = "topic_record", joinColumns = @JoinColumn(name = "record_id"))
+    private SortedSet<Record> records = new TreeSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "planner_id", referencedColumnName = "id")
@@ -74,10 +75,10 @@ public class Topic {
     @Column(insertable = false)
     private UUID lastModifiedBy;
 
-    public void addDate(LocalDateTime theDate) {
-        if (dates == null) {
-            dates = new ArrayList<>();
+    public void addRecord(Record theRecord) {
+        if (records == null) {
+            records = new TreeSet<>();
         }
-        dates.add(theDate);
+        records.add(theRecord);
     }
 }

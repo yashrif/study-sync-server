@@ -29,14 +29,21 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public Topic save(TopicPostRequest request) {
 
-        return repository.save(Topic.builder()
+        Topic topic = repository.save(Topic.builder()
                 .id(request.getId())
                 .name(request.getName())
                 .description(request.getDescription())
                 .color(request.getColor())
-                .status(request.getStatus() != null ? request.getStatus() : Status.WEAK)
-                .dates(request.getDates())
+                .records(request.getRecords())
                 .build());
+
+        if (topic.getRecords() == null) {
+            topic.setStatus(Status.WEAK);
+        } else {
+            topic.setStatus(topic.getRecords().last().getStatus());
+        }
+
+        return topic;
     }
 
     @Override
@@ -45,25 +52,35 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Topic update(Topic theCqs) {
-        repository.findById(theCqs.getId())
-                .orElseThrow(() -> new NotFoundException("Cq not found with id - " + theCqs.getId()));
-        return repository.save(theCqs);
+    public Topic update(Topic topic) {
+        repository.findById(topic.getId())
+                .orElseThrow(() -> new NotFoundException("Topic not found with id - " + topic.getId()));
+
+        if (topic.getRecords() == null) {
+            topic.setStatus(Status.WEAK);
+        } else {
+            topic.setStatus(topic.getRecords().last().getStatus());
+        }
+
+        return repository.save(topic);
     }
 
 
     @Override
     public Topic partialUpdate(UUID theId, TopicPatchRequest updates) {
+        System.out.println(updates);
         Topic topic = repository.findById(theId)
                 .orElseThrow(() -> new NotFoundException("Cq not found with email - " + theId));
 
         topic.setName(updates.getName() != null ? updates.getName() : topic.getName());
         topic.setDescription(updates.getDescription() != null ? updates.getDescription() : topic.getDescription());
         topic.setColor(updates.getColor() != null ? updates.getColor() : topic.getColor());
-        topic.setStatus(updates.getStatus() != null ? updates.getStatus() : topic.getStatus());
+        topic.setRecords(updates.getRecords() != null ? updates.getRecords() : topic.getRecords());
 
-        if (updates.getDate() != null) {
-            topic.addDate(updates.getDate());
+        if (topic.getRecords() == null || topic.getRecords().isEmpty()) {
+            topic.setStatus(Status.WEAK);
+        } else {
+            topic.setStatus(topic.getRecords().last().getStatus());
         }
 
         return repository.save(topic);

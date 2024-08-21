@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.SortedSet;
 import java.util.UUID;
 
 @Getter
@@ -27,8 +26,5 @@ public class TopicPostRequest {
     private String color;
 
     @Nullable
-    private Status status;
-
-    @Nullable
-    private List<LocalDateTime> dates;
+    private SortedSet<Record> records;
 }

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.SortedSet;
 
 @Getter
 @Setter
@@ -21,8 +21,5 @@ public class TopicPatchRequest {
     private String color;
 
     @Nullable
-    private Status status;
-
-    @Nullable
-    private LocalDateTime date;
+    private SortedSet<Record> records;
 }

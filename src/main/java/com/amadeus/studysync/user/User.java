@@ -4,10 +4,8 @@ import com.amadeus.studysync.token.Token;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,7 +32,6 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String password;
-    private LocalDateTime createDate;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -56,6 +53,13 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+    @CreatedDate
+    @Column(
+            nullable = false,
+            updatable = false
+    )
+    private LocalDateTime createDate;
 
     @Override
     public boolean isAccountNonExpired() {
