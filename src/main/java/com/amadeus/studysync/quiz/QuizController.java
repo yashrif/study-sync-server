@@ -17,10 +17,10 @@ public class QuizController {
     private final QuizServiceImpl service;
 
     @GetMapping
-    public ResponseEntity<List<QuizResponse>> findAllQuizzes() {
+    public ResponseEntity<List<QuizBasicResponse>> findAllQuizzes() {
         List<Quiz> quizzes = (service.findAll());
 
-        return ResponseEntity.ok(QuizResponse.from(quizzes));
+        return ResponseEntity.ok(QuizBasicResponse.from(quizzes));
     }
 
     @GetMapping("/{id}")
@@ -35,12 +35,12 @@ public class QuizController {
     }
 
     @PostMapping
-    public ResponseEntity<QuizResponse> save(
+    public ResponseEntity<QuizDetailedResponse> save(
             @RequestBody PostQuizRequest request
     ) {
         Quiz quiz = service.save(request);
 
-        QuizResponse response = new QuizResponse();
+        QuizDetailedResponse response = new QuizDetailedResponse();
 
         response.setId(quiz.getId());
         response.setTitle(quiz.getTitle());
