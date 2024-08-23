@@ -32,6 +32,7 @@ public class Cq {
     private String question;
 
     @NonNull
+    @Column(name = "answer", length = 1500)
     private String answer;
 
     @NonNull
