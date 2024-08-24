@@ -45,6 +45,7 @@ public class PreferenceServiceImpl implements PreferenceService {
 
         if (preference.isPresent()) {
             preference.get().setStudyId(updates.getStudyId() != null ? updates.getStudyId() : preference.get().getStudyId());
+            preference.get().setRefreshToken(updates.getRefreshToken());
             return repository.save(preference.get());
 
         }
