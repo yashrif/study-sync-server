@@ -1,7 +1,6 @@
 package com.amadeus.studysync.topic;
 
 import com.amadeus.studysync.exception.NotFoundException;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import java.util.UUID;
 public class TopicServiceImpl implements TopicService {
 
     private final TopicRepository repository;
-    private final EntityManager entityManager;
 
     @Override
     public List<Topic> findAll() {
@@ -72,18 +70,18 @@ public class TopicServiceImpl implements TopicService {
         Topic topic = repository.findById(theId)
                 .orElseThrow(() -> new NotFoundException("Cq not found with email - " + theId));
 
-        topic.setName(updates.getName() != null ? updates.getName() : topic.getName());
-        topic.setDescription(updates.getDescription() != null ? updates.getDescription() : topic.getDescription());
-        topic.setColor(updates.getColor() != null ? updates.getColor() : topic.getColor());
-        topic.setRecords(updates.getRecords() != null ? updates.getRecords() : topic.getRecords());
 
-        if (topic.getRecords() == null || topic.getRecords().isEmpty()) {
-            topic.setStatus(Status.WEAK);
-        } else {
-            topic.setStatus(topic.getRecords().last().getStatus());
-        }
+        Topic newTopic = Topic.builder()
+                .name(updates.getName() != null ? updates.getName() : topic.getName())
+                .description(updates.getDescription() != null ? updates.getDescription() : topic.getDescription())
+                .color(updates.getColor() != null ? updates.getColor() : topic.getColor())
+                .records(updates.getRecords() != null ? updates.getRecords() : topic.getRecords())
+                .status(updates.getRecords() == null || updates.getRecords().isEmpty()
+                        ? Status.WEAK
+                        : updates.getRecords().last().getStatus())
+                .build();
 
-        return repository.save(topic);
+        return repository.save(newTopic);
     }
 
     @Override
