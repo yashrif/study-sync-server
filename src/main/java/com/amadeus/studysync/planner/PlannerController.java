@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,15 +18,15 @@ public class PlannerController {
     private final PlannerServiceImpl service;
 
     @GetMapping
-    public ResponseEntity<List<PlannerResponse>> findAllTopics() {
-        List<Planner> planners = (service.findAll());
+    public ResponseEntity<List<PlannerResponse>> findAllTopics(Principal connectedUser) {
+        List<Planner> planners = (service.findAll(connectedUser));
 
         return ResponseEntity.ok(PlannerResponse.from(planners));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Planner> findTopicById(@PathVariable UUID id) throws Exception {
-        Planner planner = service.findPlannerByIdJoinFetch(id);
+    public ResponseEntity<Planner> findTopicById(@PathVariable UUID id, Principal connectedUser) throws Exception {
+        Planner planner = service.findPlannerByIdJoinFetch(id, connectedUser);
 
         if (planner == null) {
             throw new NotFoundException("Planner not found - " + id);
@@ -51,19 +52,19 @@ public class PlannerController {
 
     @PutMapping
     public ResponseEntity<Planner> update(
-            @RequestBody Planner request
+            @RequestBody Planner request, Principal connectedUser
     ) {
-        return ResponseEntity.ok((service.update(request)));
+        return ResponseEntity.ok((service.update(request, connectedUser)));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Planner> partiallyUpdate(@PathVariable UUID id, @RequestBody PlannerPatchRequest updates) {
-        Planner updatedPlanner = service.partialUpdate(id, updates);
+    public ResponseEntity<Planner> partiallyUpdate(@PathVariable UUID id, @RequestBody PlannerPatchRequest updates, Principal connectedUser) {
+        Planner updatedPlanner = service.partialUpdate(id, updates, connectedUser);
         return ResponseEntity.ok(updatedPlanner);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
-        service.deleteById(id);
+    public void delete(@PathVariable UUID id, Principal connectedUser) {
+        service.deleteById(id, connectedUser);
     }
 }

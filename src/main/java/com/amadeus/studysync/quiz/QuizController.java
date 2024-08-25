@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,15 +18,15 @@ public class QuizController {
     private final QuizServiceImpl service;
 
     @GetMapping
-    public ResponseEntity<List<QuizBasicResponse>> findAllQuizzes() {
-        List<Quiz> quizzes = (service.findAll());
+    public ResponseEntity<List<QuizBasicResponse>> findAllQuizzes(Principal connectedUser) {
+        List<Quiz> quizzes = (service.findAll(connectedUser));
 
         return ResponseEntity.ok(QuizBasicResponse.from(quizzes));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Quiz> findQuizById(@PathVariable UUID id) throws Exception {
-        Quiz quiz = service.findQuizByIdJoinFetch(id);
+    public ResponseEntity<Quiz> findQuizById(@PathVariable UUID id, Principal connectedUser) throws Exception {
+        Quiz quiz = service.findQuizByIdJoinFetch(id, connectedUser);
 
         if (quiz == null) {
             throw new NotFoundException("Quiz not found - " + id);
@@ -52,19 +53,19 @@ public class QuizController {
 
     @PutMapping
     public ResponseEntity<Quiz> update(
-            @RequestBody Quiz request
+            @RequestBody Quiz request, Principal connectedUser
     ) {
-        return ResponseEntity.ok((service.update(request)));
+        return ResponseEntity.ok((service.update(request, connectedUser)));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Quiz> partiallyUpdate(@PathVariable UUID id, @RequestBody PatchQuizRequest updates) {
-        Quiz updatedQuiz = service.partialUpdate(id, updates);
+    public ResponseEntity<Quiz> partiallyUpdate(@PathVariable UUID id, @RequestBody PatchQuizRequest updates, Principal connectedUser) {
+        Quiz updatedQuiz = service.partialUpdate(id, updates, connectedUser);
         return ResponseEntity.ok(updatedQuiz);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
-        service.deleteById(id);
+    public void delete(@PathVariable UUID id, Principal connectedUser) {
+        service.deleteById(id, connectedUser);
     }
 }

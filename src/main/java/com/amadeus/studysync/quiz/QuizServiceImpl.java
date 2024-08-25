@@ -5,9 +5,12 @@ import com.amadeus.studysync.exception.NotFoundException;
 import com.amadeus.studysync.mcq.Mcq;
 import com.amadeus.studysync.upload.Upload;
 import com.amadeus.studysync.upload.UploadRepository;
+import com.amadeus.studysync.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.*;
 
 @Service
@@ -18,13 +21,17 @@ public class QuizServiceImpl implements QuizService {
     private final UploadRepository uploadRepository;
 
     @Override
-    public List<Quiz> findAll() {
-        return repository.findAll();
+    public List<Quiz> findAll(Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findAllByUser(user.getId());
     }
 
     @Override
-    public Quiz findById(UUID theId) {
-        return repository.findById(theId).orElse(null);
+    public Quiz findById(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findByIdAndUser(theId, user.getId()).orElse(null);
     }
 
     @Override
@@ -65,20 +72,29 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public void deleteById(UUID theId) {
+    public void deleteById(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        repository.findByIdAndUser(theId, user.getId())
+                .orElseThrow(() -> new NotFoundException("Quiz not found with id - " + theId));
+
         repository.deleteById(theId);
     }
 
     @Override
-    public Quiz update(Quiz theQuiz) {
-        repository.findById(theQuiz.getId())
+    public Quiz update(Quiz theQuiz, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        repository.findByIdAndUser(theQuiz.getId(),user.getId())
                 .orElseThrow(() -> new NotFoundException("Quiz not found with id - " + theQuiz.getId()));
         return repository.save(theQuiz);
     }
 
     @Override
-    public Quiz partialUpdate(UUID theId, PatchQuizRequest updates) {
-        Quiz quiz = repository.findById(theId)
+    public Quiz partialUpdate(UUID theId, PatchQuizRequest updates, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Quiz quiz = repository.findByIdAndUser(theId,user.getId())
                 .orElseThrow(() -> new NotFoundException("Quiz not found with email - " + theId));
 
         quiz.setTitle(updates.getTitle() != null ? updates.getTitle() : quiz.getTitle());
@@ -93,20 +109,26 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz findQuizByIdJoinFetch(UUID theId) {
-        Optional<Quiz> quiz = repository.findQuizByIdJoinFetch(theId);
+    public Quiz findQuizByIdJoinFetch(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Optional<Quiz> quiz = repository.findQuizByIdJoinFetch(theId,user.getId());
         return quiz.orElseGet(() -> repository.findById(theId).orElse(null));
     }
 
     @Override
-    public List<Mcq> findMcqsByQuizId(UUID theId) {
-        Optional<List<Mcq>> mcqs = repository.findMcqsByQuizId(theId);
+    public List<Mcq> findMcqsByQuizId(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Optional<List<Mcq>> mcqs = repository.findMcqsByQuizId(theId,user.getId());
         return mcqs.orElseGet(() -> Objects.requireNonNull(repository.findById(theId).orElse(null)).getMcqs());
     }
 
     @Override
-    public List<Cq> findCqsByQuizId(UUID theId) {
-        Optional<List<Cq>> cqs = repository.findCqsByQuizId(theId);
+    public List<Cq> findCqsByQuizId(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Optional<List<Cq>> cqs = repository.findCqsByQuizId(theId,user.getId());
         return cqs.orElseGet(() -> Objects.requireNonNull(repository.findById(theId).orElse(null)).getCqs());
     }
 }

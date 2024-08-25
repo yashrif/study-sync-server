@@ -1,9 +1,12 @@
 package com.amadeus.studysync.upload;
 
 import com.amadeus.studysync.exception.NotFoundException;
+import com.amadeus.studysync.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,13 +17,17 @@ public class UploadServiceImpl implements UploadService {
     private final UploadRepository repository;
 
     @Override
-    public List<Upload> findAll() {
-        return repository.findAll();
+    public List<Upload> findAll(Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findAllByUser(user.getId());
     }
 
     @Override
-    public Upload findById(UUID theId) {
-        return repository.findById(theId).orElse(null);
+    public Upload findById(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findByIdAndUser(theId, user.getId()).orElse(null);
     }
 
     @Override
@@ -40,20 +47,29 @@ public class UploadServiceImpl implements UploadService {
 
 
     @Override
-    public void deleteById(UUID theId) {
+    public void deleteById(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        if (repository.findByIdAndUser(theId, user.getId()).isEmpty()) {
+            throw new NotFoundException("Upload not found with id - " + theId);
+        }
+
         repository.deleteById(theId);
     }
 
     @Override
-    public Upload update(Upload theUpload) {
-        repository.findById(theUpload.getId())
+    public Upload update(Upload theUpload, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        repository.findByIdAndUser(theUpload.getId(), user.getId())
                 .orElseThrow(() -> new NotFoundException("Upload not found with id - " + theUpload.getId()));
         return repository.save(theUpload);
     }
 
     @Override
-    public Upload partialUpdate(UUID theId, PatchUploadRequest updates) {
-        Upload upload = repository.findById(theId)
+    public Upload partialUpdate(UUID theId, PatchUploadRequest updates, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Upload upload = repository.findByIdAndUser(theId, user.getId())
                 .orElseThrow(() -> new NotFoundException("Upload not found with email - " + theId));
 
         upload.setTitle(updates.getTitle() != null ? updates.getTitle() : upload.getTitle());
@@ -65,7 +81,9 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public Upload findByName(String theName) {
-        return repository.findByName(theName);
+    public Upload findByName(String theName, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findByName(theName, user.getId());
     }
 }

@@ -1,10 +1,12 @@
 package com.amadeus.studysync.mcq;
 
 import com.amadeus.studysync.exception.NotFoundException;
-import jakarta.persistence.EntityManager;
+import com.amadeus.studysync.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,16 +16,19 @@ import java.util.UUID;
 public class McqServiceImpl implements McqService {
 
     private final McqRepository repository;
-    private final EntityManager entityManager;
 
     @Override
-    public List<Mcq> findAll() {
-        return repository.findAll();
+    public List<Mcq> findAll(Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findAllByUser(user.getId());
     }
 
     @Override
-    public Mcq findById(UUID theId) {
-        return repository.findById(theId).orElse(null);
+    public Mcq findById(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findByIdAndUser(theId, user.getId()).orElse(null);
     }
 
     @Override
@@ -38,20 +43,29 @@ public class McqServiceImpl implements McqService {
 
 
     @Override
-    public void deleteById(UUID theId) {
+    public void deleteById(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        repository.findByIdAndUser(theId, user.getId())
+                .orElseThrow(() -> new NotFoundException("Mcq not found with id - " + theId));
+
         repository.deleteById(theId);
     }
 
     @Override
-    public Mcq update(Mcq theCqs) {
-        repository.findById(theCqs.getId())
+    public Mcq update(Mcq theCqs, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        repository.findByIdAndUser(theCqs.getId(), user.getId())
                 .orElseThrow(() -> new NotFoundException("Mcq not found with id - " + theCqs.getId()));
         return repository.save(theCqs);
     }
 
     @Override
-    public Mcq partialUpdate(UUID theId, PatchMcqRequest updates) throws Exception {
-        Mcq mcq = repository.findById(theId)
+    public Mcq partialUpdate(UUID theId, PatchMcqRequest updates, Principal connectedUser) throws Exception {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Mcq mcq = repository.findByIdAndUser(theId, user.getId())
                 .orElseThrow(() -> new NotFoundException("Mcq not found with email - " + theId));
 
         if (updates.getAnswers() != null && updates.getChoices() != null && updates.getAnswers().size() == updates.getChoices().size()) {
@@ -67,8 +81,10 @@ public class McqServiceImpl implements McqService {
     }
 
     @Override
-    public Mcq findMcqByIdJoinFetch(UUID theId) {
-        Optional<Mcq> mcq = repository.findMcqByIdJoinFetch(theId);
-        return mcq.orElseGet(() -> repository.findById(theId).orElse(null));
+    public Mcq findMcqByIdJoinFetch(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Optional<Mcq> mcq = repository.findMcqByIdJoinFetch(theId, user.getId());
+        return mcq.orElseGet(() -> repository.findByIdAndUser(theId, user.getId()).orElse(null));
     }
 }

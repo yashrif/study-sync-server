@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,15 +18,15 @@ public class CqController {
     private final CqServiceImpl service;
 
     @GetMapping
-    public ResponseEntity<List<CqResponse>> findAllCqs() {
-        List<Cq> cqs = (service.findAll());
+    public ResponseEntity<List<CqResponse>> findAllCqs(Principal connectedUser) {
+        List<Cq> cqs = (service.findAll(connectedUser));
 
         return ResponseEntity.ok(CqResponse.from(cqs));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cq> findCqById(@PathVariable UUID id) throws Exception {
-        Cq cq = service.findCqByIdJoinFetch(id);
+    public ResponseEntity<Cq> findCqById(@PathVariable UUID id, Principal connectedUser) throws Exception {
+        Cq cq = service.findCqByIdJoinFetch(id, connectedUser);
 
         if (cq == null) {
             throw new NotFoundException("Cq not found - " + id);
@@ -50,20 +51,20 @@ public class CqController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Cq> partiallyUpdate(@PathVariable UUID id, @RequestBody PatchCqRequest updates) {
-        Cq updatedCq = service.partialUpdate(id, updates);
+    public ResponseEntity<Cq> partiallyUpdate(@PathVariable UUID id, @RequestBody PatchCqRequest updates, Principal connectedUser) {
+        Cq updatedCq = service.partialUpdate(id, updates, connectedUser);
         return ResponseEntity.ok(updatedCq);
     }
 
     @PutMapping
     public ResponseEntity<Cq> update(
-            @RequestBody Cq request
+            @RequestBody Cq request, Principal connectedUser
     ) {
-        return ResponseEntity.ok((service.update(request)));
+        return ResponseEntity.ok((service.update(request, connectedUser)));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
-        service.deleteById(id);
+    public void delete(@PathVariable UUID id, Principal connectedUser) {
+        service.deleteById(id, connectedUser);
     }
 }

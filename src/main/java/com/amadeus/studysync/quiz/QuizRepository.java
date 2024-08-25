@@ -11,12 +11,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface QuizRepository extends JpaRepository<Quiz, UUID> {
-    @Query("select i from Quiz i JOIN FETCH i.mcqs where i.id=:theId")
-    Optional<Quiz> findQuizByIdJoinFetch(@Param("theId") UUID theId);
+    @Query("select i from Quiz i JOIN FETCH i.mcqs where i.id=:quizId and i.createdBy=:id")
+    Optional<Quiz> findQuizByIdJoinFetch(@Param("quizId") UUID quizId, @Param("id") UUID id);
 
-    @Query("from Mcq where quiz.id=:theId")
-    Optional<List<Mcq>> findMcqsByQuizId(@Param("theId") UUID theId);
+    @Query("from Mcq where quiz.id=:quizId and quiz.createdBy=:id")
+    Optional<List<Mcq>> findMcqsByQuizId(@Param("quizId") UUID quizId, @Param("id") UUID id);
 
-    @Query("from Cq where quiz.id=:theId")
-    Optional<List<Cq>> findCqsByQuizId(@Param("theId") UUID theId);
+    @Query("from Cq where quiz.id=:quizId and quiz.createdBy=:id")
+    Optional<List<Cq>> findCqsByQuizId(@Param("quizId") UUID quizId, @Param("id") UUID id);
+
+    @Query(value = "select * from quiz d where d.created_by = :id", nativeQuery = true)
+    List<Quiz> findAllByUser(@Param("id") UUID id);
+
+    @Query(value = "select * from quiz d where d.created_by = :id and d.id = :quizId", nativeQuery = true)
+    Optional<Quiz> findByIdAndUser(@Param("quizId") UUID quizId, @Param("id") UUID id);
 }

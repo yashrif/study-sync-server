@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,15 +18,15 @@ public class TopicController {
     private final TopicServiceImpl service;
 
     @GetMapping
-    public ResponseEntity<List<TopicResponse>> findAllTopics() {
-        List<Topic> topics = (service.findAll());
+    public ResponseEntity<List<TopicResponse>> findAllTopics(Principal connectedUser) {
+        List<Topic> topics = (service.findAll(connectedUser));
 
         return ResponseEntity.ok(TopicResponse.from(topics));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Topic> findTopicById(@PathVariable UUID id) throws Exception {
-        Topic topic = service.findTopicByIdJoinFetch(id);
+    public ResponseEntity<Topic> findTopicById(@PathVariable UUID id, Principal connectedUser) throws Exception {
+        Topic topic = service.findTopicByIdJoinFetch(id, connectedUser);
 
         if (topic == null) {
             throw new NotFoundException("Topic not found - " + id);
@@ -51,20 +52,20 @@ public class TopicController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Topic> partiallyUpdate(@PathVariable UUID id, @RequestBody TopicPatchRequest updates) {
-        Topic updatedTopic = service.partialUpdate(id, updates);
+    public ResponseEntity<Topic> partiallyUpdate(@PathVariable UUID id, @RequestBody TopicPatchRequest updates, Principal connectedUser) {
+        Topic updatedTopic = service.partialUpdate(id, updates, connectedUser);
         return ResponseEntity.ok(updatedTopic);
     }
 
     @PutMapping
     public ResponseEntity<Topic> update(
-            @RequestBody Topic request
+            @RequestBody Topic request, Principal connectedUser
     ) {
-        return ResponseEntity.ok((service.update(request)));
+        return ResponseEntity.ok((service.update(request, connectedUser)));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
-        service.deleteById(id);
+    public void delete(@PathVariable UUID id, Principal connectedUser) {
+        service.deleteById(id, connectedUser);
     }
 }

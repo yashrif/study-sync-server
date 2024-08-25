@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,15 +18,15 @@ public class McqController {
     private final McqServiceImpl service;
 
     @GetMapping
-    public ResponseEntity<List<McqResponse>> findAllMCQs() {
-        List<Mcq> cqs = (service.findAll());
+    public ResponseEntity<List<McqResponse>> findAllMCQs(Principal connectedUser) {
+        List<Mcq> cqs = (service.findAll(connectedUser));
 
         return ResponseEntity.ok(McqResponse.from(cqs));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mcq> findMCQById(@PathVariable UUID id) throws Exception {
-        Mcq cqs = service.findMcqByIdJoinFetch(id);
+    public ResponseEntity<Mcq> findMCQById(@PathVariable UUID id, Principal connectedUser) throws Exception {
+        Mcq cqs = service.findMcqByIdJoinFetch(id, connectedUser);
 
         if (cqs == null) {
             throw new NotFoundException("MCQ not found - " + id);

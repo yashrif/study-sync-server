@@ -5,9 +5,12 @@ import com.amadeus.studysync.topic.Status;
 import com.amadeus.studysync.topic.Topic;
 import com.amadeus.studysync.upload.Upload;
 import com.amadeus.studysync.upload.UploadRepository;
+import com.amadeus.studysync.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,13 +24,17 @@ public class PlannerServiceImpl implements PlannerService {
     private final UploadRepository uploadRepository;
 
     @Override
-    public List<Planner> findAll() {
-        return repository.findAll();
+    public List<Planner> findAll(Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findAllByUser(user.getId());
     }
 
     @Override
-    public Planner findById(UUID theId) {
-        return repository.findById(theId).orElse(null);
+    public Planner findById(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        return repository.findByIdAndUser(theId, user.getId()).orElse(null);
     }
 
     @Override
@@ -57,20 +64,29 @@ public class PlannerServiceImpl implements PlannerService {
     }
 
     @Override
-    public void deleteById(UUID theId) {
+    public void deleteById(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        repository.findByIdAndUser(theId, user.getId())
+                .orElseThrow(() -> new NotFoundException("Planner not found with id - " + theId));
+
         repository.deleteById(theId);
     }
 
     @Override
-    public Planner update(Planner thePlanner) {
-        repository.findById(thePlanner.getId())
+    public Planner update(Planner thePlanner, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        repository.findByIdAndUser(thePlanner.getId(), user.getId())
                 .orElseThrow(() -> new NotFoundException("Planner not found with id - " + thePlanner.getId()));
         return repository.save(thePlanner);
     }
 
     @Override
-    public Planner partialUpdate(UUID theId, PlannerPatchRequest updates) {
-        Planner planner = repository.findById(theId)
+    public Planner partialUpdate(UUID theId, PlannerPatchRequest updates, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Planner planner = repository.findByIdAndUser(theId, user.getId())
                 .orElseThrow(() -> new NotFoundException("Planner not found with id - " + theId));
 
         planner.setTitle(updates.getTitle() != null ? updates.getTitle() : planner.getTitle());
@@ -82,8 +98,10 @@ public class PlannerServiceImpl implements PlannerService {
     }
 
     @Override
-    public Planner findPlannerByIdJoinFetch(UUID theId) {
-        Optional<Planner> planner = repository.findPlannerByIdJoinFetch(theId);
+    public Planner findPlannerByIdJoinFetch(UUID theId, Principal connectedUser) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        Optional<Planner> planner = repository.findPlannerByIdJoinFetch(theId, user.getId());
         return planner.orElseGet(() -> repository.findById(theId).orElse(null));
     }
 
