@@ -4,6 +4,7 @@ import com.amadeus.studysync.topic.Topic;
 import com.amadeus.studysync.upload.Upload;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,9 @@ public class Planner {
             joinColumns = @JoinColumn(name = "planner_id"),
             inverseJoinColumns = @JoinColumn(name = "upload_id"))
     private List<Upload> uploads;
+
+    @Nullable
+    private LocalDateTime endDate;
 
     @CreatedDate
     @Column(

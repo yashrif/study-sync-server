@@ -40,6 +40,9 @@ public class PlannerResponse {
     @JsonProperty("createDate")
     private LocalDateTime createDate;
 
+    @JsonProperty("endDate")
+    private LocalDateTime endDate;
+
     public static List<PlannerResponse> from(List<Planner> planners) {
 
         return planners.stream()
@@ -54,6 +57,7 @@ public class PlannerResponse {
                                         .build())
                                 .collect(Collectors.toList()))
                         .createDate(planner.getCreateDate())
+                        .endDate(planner.getEndDate())
                         .build())
                 .collect(Collectors.toList());
     }

@@ -12,9 +12,9 @@ public interface TopicRepository extends JpaRepository<Topic, UUID> {
     @Query("SELECT i FROM Topic i JOIN FETCH i.planner WHERE i.id = :theId and i.planner.createdBy = :id")
     Optional<Topic> findTopicByIdJoinFetch(@Param("theId") UUID theId, @Param("id") UUID id);
 
-    @Query(value = "select * from topic d where d.created_by = :id", nativeQuery = true)
+    @Query(value = "select * from topic i where i.created_by = :id", nativeQuery = true)
     List<Topic> findAllByUser(@Param("id") UUID id);
 
-    @Query(value = "select * from topic d where d.created_by = :id and d.id = :topicId", nativeQuery = true)
+    @Query(value = "select * from topic i where i.created_by = :id and i.id = :topicId", nativeQuery = true)
     Optional<Topic> findByIdAndUser(@Param("topicId") UUID topicId, @Param("id") UUID id);
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,4 +18,7 @@ public class PlannerPatchRequest {
 
     @Nullable
     private List<Topic> topics;
+
+    @Nullable
+    private LocalDateTime endDate;
 }

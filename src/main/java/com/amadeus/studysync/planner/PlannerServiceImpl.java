@@ -43,6 +43,7 @@ public class PlannerServiceImpl implements PlannerService {
         Planner planner = Planner.builder()
                 .id(request.getId())
                 .title(request.getTitle())
+                .endDate(request.getEndDate())
                 .build();
 
         List<Topic> topics = new ArrayList<>();
@@ -90,6 +91,7 @@ public class PlannerServiceImpl implements PlannerService {
                 .orElseThrow(() -> new NotFoundException("Planner not found with id - " + theId));
 
         planner.setTitle(updates.getTitle() != null ? updates.getTitle() : planner.getTitle());
+        planner.setEndDate(updates.getEndDate());
 
         if (updates.getTopics() != null)
             updates.getTopics().forEach(planner::addTopic);
