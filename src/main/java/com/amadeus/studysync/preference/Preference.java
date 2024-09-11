@@ -30,6 +30,9 @@ public class Preference {
 
     @Nullable
     private String studyId;
+    @Nullable
+    private String refreshToken;
+
 
     @CreatedDate
     @Column(

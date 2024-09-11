@@ -11,5 +11,6 @@ import lombok.*;
 public class PatchPreferenceRequest {
     @Nullable
     private String studyId;
-
+    @Nullable
+    private String refreshToken;
 }
