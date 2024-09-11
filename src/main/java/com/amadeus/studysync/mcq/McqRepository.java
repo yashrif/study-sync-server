@@ -12,9 +12,9 @@ public interface McqRepository extends JpaRepository<Mcq, UUID> {
     @Query("SELECT i FROM Mcq i JOIN FETCH i.quiz WHERE i.id = :mcqId and i.createdBy = :id")
     Optional<Mcq> findMcqByIdJoinFetch(@Param("mcqId") UUID mcqId, @Param("id") UUID id);
 
-    @Query(value = "select * from upload d where d.created_by = :id", nativeQuery = true)
+    @Query(value = "select * from mcq d where d.created_by = :id", nativeQuery = true)
     List<Mcq> findAllByUser(@Param("id") UUID id);
 
-    @Query(value = "select * from upload d where d.created_by = :id and d.id = :mcqId", nativeQuery = true)
+    @Query(value = "select * from mcq d where d.created_by = :id and d.id = :mcqId", nativeQuery = true)
     Optional<Mcq> findByIdAndUser(@Param("mcqId") UUID mcqId, @Param("id") UUID id);
 }

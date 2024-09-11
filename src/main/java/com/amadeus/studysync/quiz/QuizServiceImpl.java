@@ -75,8 +75,10 @@ public class QuizServiceImpl implements QuizService {
     public void deleteById(UUID theId, Principal connectedUser) {
         User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
-        repository.findByIdAndUser(theId, user.getId())
+        Quiz quiz = repository.findByIdAndUser(theId, user.getId())
                 .orElseThrow(() -> new NotFoundException("Quiz not found with id - " + theId));
+
+        quiz.getCqs().forEach(cq -> cq.setQuiz(null));
 
         repository.deleteById(theId);
     }
@@ -85,7 +87,7 @@ public class QuizServiceImpl implements QuizService {
     public Quiz update(Quiz theQuiz, Principal connectedUser) {
         User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
-        repository.findByIdAndUser(theQuiz.getId(),user.getId())
+        repository.findByIdAndUser(theQuiz.getId(), user.getId())
                 .orElseThrow(() -> new NotFoundException("Quiz not found with id - " + theQuiz.getId()));
         return repository.save(theQuiz);
     }
@@ -94,7 +96,7 @@ public class QuizServiceImpl implements QuizService {
     public Quiz partialUpdate(UUID theId, PatchQuizRequest updates, Principal connectedUser) {
         User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
-        Quiz quiz = repository.findByIdAndUser(theId,user.getId())
+        Quiz quiz = repository.findByIdAndUser(theId, user.getId())
                 .orElseThrow(() -> new NotFoundException("Quiz not found with email - " + theId));
 
         quiz.setTitle(updates.getTitle() != null ? updates.getTitle() : quiz.getTitle());
@@ -112,7 +114,7 @@ public class QuizServiceImpl implements QuizService {
     public Quiz findQuizByIdJoinFetch(UUID theId, Principal connectedUser) {
         User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
-        Optional<Quiz> quiz = repository.findQuizByIdJoinFetch(theId,user.getId());
+        Optional<Quiz> quiz = repository.findQuizByIdJoinFetch(theId, user.getId());
         return quiz.orElseGet(() -> repository.findById(theId).orElse(null));
     }
 
@@ -120,7 +122,7 @@ public class QuizServiceImpl implements QuizService {
     public List<Mcq> findMcqsByQuizId(UUID theId, Principal connectedUser) {
         User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
-        Optional<List<Mcq>> mcqs = repository.findMcqsByQuizId(theId,user.getId());
+        Optional<List<Mcq>> mcqs = repository.findMcqsByQuizId(theId, user.getId());
         return mcqs.orElseGet(() -> Objects.requireNonNull(repository.findById(theId).orElse(null)).getMcqs());
     }
 
@@ -128,7 +130,7 @@ public class QuizServiceImpl implements QuizService {
     public List<Cq> findCqsByQuizId(UUID theId, Principal connectedUser) {
         User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
-        Optional<List<Cq>> cqs = repository.findCqsByQuizId(theId,user.getId());
+        Optional<List<Cq>> cqs = repository.findCqsByQuizId(theId, user.getId());
         return cqs.orElseGet(() -> Objects.requireNonNull(repository.findById(theId).orElse(null)).getCqs());
     }
 }
