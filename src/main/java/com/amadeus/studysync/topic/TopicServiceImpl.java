@@ -85,8 +85,9 @@ public class TopicServiceImpl implements TopicService {
         Topic topic = repository.findByIdAndUser(theId, user.getId())
                 .orElseThrow(() -> new NotFoundException("Cq not found with email - " + theId));
 
-
         Topic newTopic = Topic.builder()
+                .id(topic.getId())
+                .planner(topic.getPlanner())
                 .name(updates.getName() != null ? updates.getName() : topic.getName())
                 .description(updates.getDescription() != null ? updates.getDescription() : topic.getDescription())
                 .color(updates.getColor() != null ? updates.getColor() : topic.getColor())

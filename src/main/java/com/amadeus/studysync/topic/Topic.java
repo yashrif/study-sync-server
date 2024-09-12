@@ -2,6 +2,7 @@ package com.amadeus.studysync.topic;
 
 import com.amadeus.studysync.planner.Planner;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -48,6 +49,7 @@ public class Topic {
     @CollectionTable(name = "topic_record", joinColumns = @JoinColumn(name = "record_id"))
     private SortedSet<Record> records = new TreeSet<>();
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "planner_id", referencedColumnName = "id")
     private Planner planner;

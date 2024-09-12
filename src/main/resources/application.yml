@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/study_sync
-    username: amadeus
-    password: amadeus123
+    url: jdbc:postgresql://dpg-crhfhuaj1k6c73e18uug-a.singapore-postgres.render.com:5432/study_sync
+    username: study_sync_user
+    password: BLDsOWdtjI5pgESvQN3NC3d1U7CFF1FO
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
