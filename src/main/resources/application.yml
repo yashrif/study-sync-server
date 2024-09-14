@@ -1,8 +1,11 @@
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-crhfhuaj1k6c73e18uug-a.singapore-postgres.render.com:5432/study_sync
-    username: study_sync_user
-    password: BLDsOWdtjI5pgESvQN3NC3d1U7CFF1FO
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
