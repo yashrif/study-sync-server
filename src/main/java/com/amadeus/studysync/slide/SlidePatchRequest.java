@@ -10,5 +10,8 @@ import lombok.Setter;
 @Builder
 public class SlidePatchRequest {
     @Nullable
+    private String name;
+
+    @Nullable
     private String content;
 }

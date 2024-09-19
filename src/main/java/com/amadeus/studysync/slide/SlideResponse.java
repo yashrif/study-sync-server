@@ -20,6 +20,9 @@ public class SlideResponse {
     @JsonProperty("id")
     private UUID id;
 
+    @JsonProperty("name")
+    private String name;
+
     @JsonProperty("content")
     private String content;
 
@@ -34,6 +37,7 @@ public class SlideResponse {
         return slides.stream()
                 .map(slide -> SlideResponse.builder()
                         .id(slide.getId())
+                        .name(slide.getName())
                         .content(slide.getContent())
                         .uploads(slide.getUploads().stream()
                                 .map(upload -> UploadResponse.builder()

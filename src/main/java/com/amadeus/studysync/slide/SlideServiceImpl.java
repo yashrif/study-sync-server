@@ -39,6 +39,7 @@ public class SlideServiceImpl implements SlideService {
 
         Slide slide = Slide.builder()
                 .id(request.getId())
+                .name(request.getName())
                 .content(request.getContent())
                 .build();
 
@@ -80,6 +81,7 @@ public class SlideServiceImpl implements SlideService {
         Slide slide = repository.findByIdAndUser(theId, user.getId())
                 .orElseThrow(() -> new NotFoundException("Slide not found with id - " + theId));
 
+        slide.setName(updates.getName() != null ? updates.getName() : slide.getName());
         slide.setContent(updates.getContent() != null ? updates.getContent() : slide.getContent());
 
 

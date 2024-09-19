@@ -31,6 +31,8 @@ public class Slide {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    private String name;
+
     @Column(name = "content", length = 150000)
     private String content;
 
