@@ -1,12 +1,13 @@
-package com.amadeus.studysync.upload;
+package com.amadeus.studysync.slide;
 
-import com.amadeus.studysync.planner.Planner;
-import com.amadeus.studysync.quiz.Quiz;
-import com.amadeus.studysync.slide.Slide;
+import com.amadeus.studysync.upload.Upload;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -14,6 +15,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,37 +26,19 @@ import java.util.UUID;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Upload {
+public class Slide {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NonNull
-    private String title;
-
-    @NonNull
-    private String name;
-
-    @NonNull
-    private String type;
-    private Boolean isIndexed;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "quiz_upload",
-            joinColumns = @JoinColumn(name = "upload_id"),
-            inverseJoinColumns = @JoinColumn(name = "quiz_id"))
-    private List<Quiz> quizzes;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "planner_upload",
-            joinColumns = @JoinColumn(name = "upload_id"),
-            inverseJoinColumns = @JoinColumn(name = "planner_id"))
-    private List<Planner> planners;
+    @Column(name = "content", length = 150000)
+    private String content;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "slide_upload",
-            joinColumns = @JoinColumn(name = "upload_id"),
-            inverseJoinColumns = @JoinColumn(name = "slide_id"))
-    private List<Slide> slides;
+            joinColumns = @JoinColumn(name = "slide_id"),
+            inverseJoinColumns = @JoinColumn(name = "upload_id"))
+    private List<Upload> uploads;
 
     @CreatedDate
     @Column(
@@ -67,7 +51,6 @@ public class Upload {
     @Column(insertable = false)
     private LocalDateTime lastModified;
 
-
     @CreatedBy
     @Column(
             nullable = false,
@@ -78,4 +61,11 @@ public class Upload {
     @LastModifiedBy
     @Column(insertable = false)
     private UUID lastModifiedBy;
+
+    public void addUpload(Upload theUpload) {
+        if (uploads == null) {
+            uploads = new ArrayList<>();
+        }
+        uploads.add(theUpload);
+    }
 }
