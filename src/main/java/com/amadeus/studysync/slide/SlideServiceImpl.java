@@ -41,6 +41,7 @@ public class SlideServiceImpl implements SlideService {
                 .id(request.getId())
                 .name(request.getName())
                 .content(request.getContent())
+                .topics(request.getTopics())
                 .build();
 
         if (request.getUploads() == null) {

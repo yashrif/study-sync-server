@@ -4,6 +4,7 @@ import com.amadeus.studysync.planner.Planner;
 import com.amadeus.studysync.quiz.Quiz;
 import com.amadeus.studysync.slide.Slide;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,18 +39,21 @@ public class Upload {
     private String type;
     private Boolean isIndexed;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "quiz_upload",
             joinColumns = @JoinColumn(name = "upload_id"),
             inverseJoinColumns = @JoinColumn(name = "quiz_id"))
     private List<Quiz> quizzes;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "planner_upload",
             joinColumns = @JoinColumn(name = "upload_id"),
             inverseJoinColumns = @JoinColumn(name = "planner_id"))
     private List<Planner> planners;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "slide_upload",
             joinColumns = @JoinColumn(name = "upload_id"),

@@ -46,6 +46,7 @@ public class SlideController {
         response.setId(slide.getId());
         response.setName(slide.getName());
         response.setContent(slide.getContent());
+        response.setTopics(slide.getTopics());
         response.setCreateDate(slide.getCreateDate());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);

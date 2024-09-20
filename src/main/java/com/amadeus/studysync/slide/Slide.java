@@ -36,6 +36,9 @@ public class Slide {
     @Column(name = "content", length = 150000)
     private String content;
 
+    @ElementCollection
+    private List<String> topics;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "slide_upload",
             joinColumns = @JoinColumn(name = "slide_id"),

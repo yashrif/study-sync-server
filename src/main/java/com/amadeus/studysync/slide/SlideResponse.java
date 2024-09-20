@@ -26,6 +26,9 @@ public class SlideResponse {
     @JsonProperty("content")
     private String content;
 
+    @JsonProperty("topics")
+    private List<String> topics;
+
     @JsonProperty("createDate")
     private LocalDateTime createDate;
 
@@ -39,15 +42,7 @@ public class SlideResponse {
                         .id(slide.getId())
                         .name(slide.getName())
                         .content(slide.getContent())
-                        .uploads(slide.getUploads().stream()
-                                .map(upload -> UploadResponse.builder()
-                                        .id(upload.getId())
-                                        .title(upload.getTitle())
-                                        .name(upload.getName())
-                                        .type(upload.getType())
-                                        .isIndexed(upload.getIsIndexed())
-                                        .build())
-                                .collect(Collectors.toList()))
+                        .uploads(UploadResponse.from(slide.getUploads()))
                         .createDate(slide.getCreateDate())
                         .build())
                 .collect(Collectors.toList());

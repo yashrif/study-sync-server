@@ -22,6 +22,9 @@ public class SlidePostRequest {
     @NonNull
     private String content;
 
+    @NonNull
+    private List<String> topics;
+
     @Nullable
     private List<Upload> uploads;
 }
